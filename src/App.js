@@ -8,9 +8,11 @@ import Register from "./components/Register.js";
 import Product from "./components/Product.js";
 import { CartProvider } from "./context/CartContext.js";
 import {useEffect,useState} from "react";
+import Search from "./Page/Search/Search";
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [selectedProduct,setselectedProduct]=useState(null)
     useEffect(() => {
         // 로그인 상태 확인 API 호출
         fetch("http://localhost:8000/auth/protected", {
@@ -36,7 +38,8 @@ function App() {
             path=""
             element={
               <DefaultLayout isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}>
-                <Home />
+                <Home selectedProduct={selectedProduct}
+                      setselectedProduct={setselectedProduct}/>
               </DefaultLayout>
             }
           />
@@ -44,7 +47,8 @@ function App() {
             path="/home"
             element={
               <DefaultLayout isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}>
-                <Home />
+                <Home selectedProduct={selectedProduct}
+                      setselectedProduct={setselectedProduct}/>
               </DefaultLayout>
             }
           />
@@ -68,7 +72,7 @@ function App() {
             path="/product-detail"
             element={
               <DefaultLayout isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}>
-                <Product />
+                <Product setselectedProduct={setselectedProduct}/>
               </DefaultLayout>
             }
           />
@@ -86,6 +90,14 @@ function App() {
               <DefaultLayout isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}>
                 <Shopping />
               </DefaultLayout>
+            }
+          />
+          <Route
+            path="/Search"
+            element={
+                <DefaultLayout isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}>
+                    <Search />
+                </DefaultLayout>
             }
           />
         </Routes>

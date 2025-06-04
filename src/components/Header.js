@@ -17,11 +17,11 @@ function Header({isLoggedIn,setIsLoggedIn}) {
   const navigate = useNavigate();
   const { cart } = useContext(CartContext);
 
-  const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+  const totalItems = Array.isArray(cart) ? cart.length : 0;
 
   useEffect(() => {
-    fetch("http://localhost:8000/auth/protected", {
-      credentials: "include",
+    fetch("http://localhost:8001/auth/protected", {
+      credentials: "include"
     })
         .then(res => res.ok ? res.json() : null)
         .then(data => {
@@ -33,7 +33,7 @@ function Header({isLoggedIn,setIsLoggedIn}) {
 
     const handleSignOut = async () => {
         try {
-            const res = await fetch("http://localhost:8000/auth/logout", {
+            const res = await fetch("http://localhost:8001/auth/logout", {
                 method: "POST",
                 credentials: "include",
             });

@@ -1,34 +1,67 @@
-.notification-message {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  background-color: #4caf50;
-  color: white;
-  padding: 15px 25px;
+.Product-title-container {
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.Product-title {
+  display: flex;
+  max-width: 1000px;
+  width: 100%;
+  gap: 40px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.product-info-left {
+  flex: 1;
+  min-width: 300px;
+  display: flex;
+  justify-content: center;
+}
+
+.product-image {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  animation: slideIn 0.5s ease-out, fadeOut 0.5s ease-in 1.5s;
-  z-index: 1000;
+}
+
+.product-info-right {
+  flex: 1;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background-color: #f0f0f0;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.product-price2 {
+  font-size: 24px;
+  font-weight: bold;
+  color: green;
+  margin: 0;
+}
+
+.info-button {
+  background-color: #ccc;
+  border: 1px solid black;
+  padding: 12px 20px;
   font-size: 16px;
-  font-weight: 500;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background-color 0.3s;
 }
 
-@keyframes slideIn {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
+.info-button:hover {
+  background-color: #bbb;
 }
 
-@keyframes fadeOut {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
+.product-description {
+  text-align: center;
+  margin-top: 40px;
+  font-size: 28px;
 }

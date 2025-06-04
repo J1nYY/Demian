@@ -13,7 +13,7 @@ function Account({setIsLoggedIn}) {
 
   const handleLogin = async () => {
     try {
-      const res = await fetch("http://localhost:8000/auth/login", {
+      const res = await fetch("http://localhost:8001/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

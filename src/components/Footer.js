@@ -4,7 +4,7 @@ function Footer({isLoggedIn,setIsLoggedIn}) {
 
 
   useEffect(() => {
-    fetch("http://localhost:8000/auth/protected", {
+    fetch("http://localhost:8001/auth/protected", {
       credentials: "include",
     })
         .then(res => res.ok ? res.json() : null)
