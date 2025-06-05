@@ -10,7 +10,7 @@ export function CartProvider({ children }) {
       const res = await fetch("http://localhost:8001/cart/items", {
         credentials: "include",
       });
-      if (res.ok) {
+      if (!res.ok) {
         const data = await res.json();
         console.log(data)
         setCart(data.results);
@@ -28,11 +28,14 @@ export function CartProvider({ children }) {
         method: "POST",
         credentials: "include",
       });
-      if (res.ok) {
-        await fetchCart(); // 최신 상태로 갱신
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.detail || "에러 발생");
       }
+      return data.message || "";
     } catch (err) {
       console.error(err);
+      throw err;
     }
   };
 

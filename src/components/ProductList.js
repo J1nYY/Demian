@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { FaCaretLeft } from "react-icons/fa";
 import { FaCaretRight } from "react-icons/fa";
+import { useLocation } from "react-router-dom";
 const ITEMS_PER_PAGE = 4;
 function ProductList_withbutton({selectedProduct,setselectedProduct}) {
   const [books, setBooks] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const location = useLocation();
   //일단 있는 api로 만들게요
   useEffect(() => {
-    if (selectedProduct === false) return;
+    setLoading(true)
     fetch("http://localhost:8001/recommend",{
       credentials: "include"
     })
@@ -29,7 +31,7 @@ function ProductList_withbutton({selectedProduct,setselectedProduct}) {
         setselectedProduct(false);
       });
 
-  }, [selectedProduct]);
+  }, [selectedProduct, location.pathname]);
   //여기부터
   const [currentPage, setCurrentPage] = useState(0);
   const maxPage = Math.ceil(books.length / ITEMS_PER_PAGE) - 1;

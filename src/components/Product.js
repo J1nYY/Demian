@@ -54,10 +54,15 @@ function Product({setselectedProduct}) {
             <button
               type="button"
               className="info-button"
-              onClick={() => {
-                setMessage("상품이 장바구니에 추가되었습니다.");
-                addToCart(book.id);
-                setTimeout(() => setMessage(""), 1000);
+              onClick={async () => {
+                  try {
+                      const message = await addToCart(book.id);
+                      setMessage(message);
+                  } catch (err) {
+                      setMessage(err.message);
+                  } finally {
+                      setTimeout(() => setMessage(""), 1000);
+                  }
               }}
             >
               장바구니 담기

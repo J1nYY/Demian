@@ -14,6 +14,8 @@ function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [selectedProduct,setselectedProduct]=useState(null)
     useEffect(() => {
+        document.cookie = "session_id=; Max-Age=0; path=/";
+        localStorage.removeItem("session_id");
         // 로그인 상태 확인 API 호출
         fetch("http://localhost:8000/auth/protected", {
             credentials: "include",
