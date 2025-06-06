@@ -10,7 +10,7 @@ export function CartProvider({ children }) {
       const res = await fetch("http://localhost:8001/cart/items", {
         credentials: "include",
       });
-      if (!res.ok) {
+      if (res.ok) {
         const data = await res.json();
         console.log(data)
         setCart(data.results);
@@ -32,6 +32,7 @@ export function CartProvider({ children }) {
       if (!res.ok) {
         throw new Error(data.detail || "에러 발생");
       }
+      await fetchCart()
       return data.message || "";
     } catch (err) {
       console.error(err);
@@ -46,7 +47,7 @@ export function CartProvider({ children }) {
         credentials: "include",
       });
       if (res.ok) {
-        setCart((prev) => prev.filter((item) => item.id !== id));
+        await fetchCart()
       }
     } catch (err) {
       console.error(err);
