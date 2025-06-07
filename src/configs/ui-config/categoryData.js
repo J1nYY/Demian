@@ -17,6 +17,6 @@ export const categories = [
   },
   {
     name: "책",
-    list: ["아트북", "전문서"],
+    list: ["아트북"],
   },
 ];
