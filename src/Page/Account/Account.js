@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { CiLogin } from "react-icons/ci";
 import "./Account.css";
 
-function Account() {
+function Account({setIsLoggedIn}) {
   const [form, setForm] = useState({ email: "", password: "" });
   const navigate = useNavigate();
 
@@ -13,23 +13,26 @@ function Account() {
 
   const handleLogin = async () => {
     try {
-      // Get users from localStorage
-      const users = JSON.parse(localStorage.getItem("users")) || [];
+      const res = await fetch("http://localhost:8001/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          email: form.email,
+          password: form.password,
+        }),
+      });
 
-      // Find user with matching email and password
-      const user = users.find(
-        (u) => u.email === form.email && u.password === form.password
-      );
-
-      if (user) {
-        // Store logged in user info
-        localStorage.setItem("currentUser", JSON.stringify(user));
-        alert("Login Success!");
-        navigate("/home");
-        window.location.reload();
-      } else {
-        alert("Invalid email or password!");
+      if (!res.ok) {
+        const data = await res.json();
+        alert(data.detail || "로그인 실패");
+        return;
       }
+
+      const data = await res.json();
+      await setIsLoggedIn(true);
+      alert(data.message);
+      navigate("/home");
     } catch (err) {
       alert("Login Error");
     }
