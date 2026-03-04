@@ -75,5 +75,4 @@
 ---
 
 ## 11) 결과물(문서/발표)
-- 논문: *Web Product Information Extraction Using Visual Layout Structures Based on ViDE*
-- 팀 발표자료: *웹 크롤링 기반 쇼핑몰(쇼핑창고) – 팀 데미안* 
+- 논문: *ViDE 기반 시각 레이아웃 구조를 활용한 웹 상품 정보 추출*(정보처리학회 학술대회논문집)
