@@ -1,70 +1,79 @@
-# Getting Started with Create React App
+# ViDE 기반 시각 레이아웃 구조를 활용한 웹 상품 정보 추출
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 1) 개요
+비정형(구조화되지 않은) 웹페이지에서 **머신러닝/대규모 학습 없이**, 렌더링 기반 **시각적 반복 구조**를 이용해 상품 블록을 찾고(카드 단위), **상품명/가격/이미지** 등 핵심 정보를 **규칙 기반**으로 추출하는 경량 알고리즘 및 크롤링 기반 통합 쇼핑몰 시스템을 설계·구현했습니다.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 2) 문제 정의
+- 개인 쇼핑몰/임대형 플랫폼 기반 쇼핑몰(예: 아임웹, 식스샵 등)은 증가하지만, 주요 검색 플랫폼의 쇼핑 탭에는 **제휴/API 연동** 또는 **정형화된 HTML 요구** 등의 한계로 상품이 잘 노출되지 않는 문제가 있습니다.
+- 기존 DOM 기반 추출은 class/id 일관성이 없는 비정형 페이지에서 취약하며, 학습 기반 접근은 데이터/추론 비용 때문에 실시간 크롤링 환경에 부담이 큽니다.
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 3) 목표
+- 다양한 비정형 쇼핑몰 페이지에서 **상품 카드(반복 블록)** 를 자동으로 식별
+- 상품 카드 내부에서 **상품명, 가격, 이미지, URL** 등 핵심 정보를 자동 추출
+- 실시간 크롤링 주기를 줄일 수 있도록 **경량화(연산 최소화)**
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+---
 
-### `npm test`
+## 4) 핵심 아이디어 / 접근 방법
+- ViDE의 “시각적 반복 구조 감지” 원리를 기반으로 하되,
+  - **렌더링 정보(위치/크기 등)** 를 활용하여 반복되는 상품 블록을 찾고
+  - 그 내부에서 텍스트 패턴/상대적 위치 등을 이용해 **규칙 기반으로 필드(상품명/가격/이미지)** 를 추출합니다.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## 5) 시스템 아키텍처(서비스 구성)
+크롤링 기반 통합 쇼핑 플랫폼 관점에서 시스템을 다음과 같이 구성했습니다.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **프론트 서버(React)** ↔ **백엔드 서버(FastAPI)** ↔ **웹 크롤링 서버(FastAPI)**  
+- 데이터 저장: **SQLite**, 검색: **Elasticsearch**
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 6) 데이터 수집(크롤링 파이프라인)
+- Google Custom Search API로 키워드 기반 **root URL 수집**
+- ViDE 기반 모듈로 **상품 목록 URL 수집**
+- 목록 URL에서 **상품 데이터 추출(ViDE)**
+- 상품 URL에서 **상세 정보 추출(ViDE)**
+- 키워드 기반 **카테고리 분류**
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 7) 상품 블록(카드) 탐지 및 정보 추출 흐름
+- 이미지/텍스트/URL 요소가 있는 **후보군 수집**
+- 포함관계를 이용해 **시각 트리 생성** 및 유사 블록 **클러스터링**
+- 자식 요소 유무, 가격 유무 등 휴리스틱으로 **상품 블록 판단**
+- 상품 페이지의 시각 정보 수집 후, 우선순위에 따라 텍스트/이미지 정보 수집
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## 8) 실험 및 결과(경량화 효과)
+- 10개 URL에서 평균값으로 비교(필터링 적용 여부)
+- 필터링 적용 시:
+  - **시각 데이터 수집 시간**: 17.665s → 7.964s
+  - **Visual Node Count**: 2892 → 663
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+---
 
-## Learn More
+## 9) 검색/추천 기능(서비스 레벨 기능)
+- Elasticsearch에서 상품명/카테고리/상세설명에 검색어가 포함되면 검색
+- 마지막 클릭 상품 기준으로 설명+이름 기반 **TF-IDF 유사 상품 추천**
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 10) 한계 및 개선 계획
+- 검색 엔진 기반 URL 수집이라 개인 쇼핑몰 전체 커버는 어려움
+- 키워드 룰 기반 카테고리 분류는 오류 가능
+- 상품 블록 추출이 휴리스틱이라 완전한 처리라고 보기 어려움
+- 상품 상세 데이터 추출 시간이 오래 걸림(ViDE 한계)
+- 관리자 기능 부재
+- 향후: 반복 구조 탐지 정밀도 향상, 필드 추출 정확도 개선 후처리, 텍스트 의미 기반 보조 필터링 등 실험 검증 계획
 
-### Code Splitting
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 11) 결과물(문서/발표)
+- 논문: *Web Product Information Extraction Using Visual Layout Structures Based on ViDE*
+- 팀 발표자료: *웹 크롤링 기반 쇼핑몰(쇼핑창고) – 팀 데미안* 
