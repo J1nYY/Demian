@@ -11,6 +11,14 @@
 
 ---
 
+
+##  사용 기술 
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=000)
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+
+---
+
 ##  목표
 - 다양한 비정형 쇼핑몰 페이지에서 **상품 카드(반복 블록)** 를 자동으로 식별
 - 상품 카드 내부에서 **상품명, 가격, 이미지, URL** 등 핵심 정보를 자동 추출
