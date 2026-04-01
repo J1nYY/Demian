@@ -11,27 +11,46 @@ import { categories } from "../configs/ui-config/categoryData";
 import { CartContext } from "../context/CartContext";
 import "../styles/Header.css";
 
-function Header() {
+function Header({isLoggedIn,setIsLoggedIn}) {
   const [visibe, setVisible] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   const navigate = useNavigate();
   const { cart } = useContext(CartContext);
 
-  const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+  const totalItems = Array.isArray(cart) ? cart.length : 0;
 
   useEffect(() => {
-    // Check if user is logged in by checking localStorage
-    const currentUser = localStorage.getItem("currentUser");
-    setIsLoggedIn(!!currentUser);
+    fetch("http://localhost:8001/auth/protected", {
+      credentials: "include"
+    })
+        .then(res => res.ok ? res.json() : null)
+        .then(data => {
+          if (data) {
+            setIsLoggedIn(true);
+          }
+        });
   }, []);
 
-  const handleSignOut = () => {
-    localStorage.removeItem("currentUser");
-    setIsLoggedIn(false);
-    navigate("/home");
-    window.location.reload();
-  };
+    const handleSignOut = async () => {
+        try {
+            const res = await fetch("http://localhost:8001/auth/logout", {
+                method: "POST",
+                credentials: "include",
+            });
+
+            if (res.ok) {
+                await res.json();
+                setIsLoggedIn(false);
+                navigate("/home");
+                window.location.reload();
+            } else {
+                alert("로그아웃 실패");
+            }
+        } catch (err) {
+            console.error("로그아웃 중 에러:", err);
+            alert("에러 발생");
+        }
+    };
 
   return (
     <header className="header">

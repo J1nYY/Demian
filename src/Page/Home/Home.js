@@ -1,10 +1,11 @@
 import Button from "../../components/Button";
 import ProductList from "../../components/ProductList";
-function Home() {
+function Home({selectedProduct,setselectedProduct}) {
   return (
     <div>
       <Button />
-      <ProductList></ProductList>
+      <ProductList selectedProduct={selectedProduct}
+        setselectedProduct={setselectedProduct}></ProductList>
     </div>
   );
 }

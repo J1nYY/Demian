@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { FaCaretLeft } from "react-icons/fa";
 import { FaCaretRight } from "react-icons/fa";
+import { useLocation } from "react-router-dom";
 const ITEMS_PER_PAGE = 4;
-function ProductList_withbutton() {
+function ProductList_withbutton({selectedProduct,setselectedProduct}) {
   const [books, setBooks] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const location = useLocation();
   //일단 있는 api로 만들게요
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/books")
+    setLoading(true)
+    fetch("http://localhost:8001/recommend",{
+      credentials: "include"
+    })
       .then((res) => {
         if (!res.ok) {
           throw new Error("HTTP error " + res.status);
@@ -15,15 +20,18 @@ function ProductList_withbutton() {
         return res.json();
       })
       .then((data) => {
-        console.log("Fetched books:", data.books);
-        setBooks(data.books);
+        setBooks(data.recommendations);
+        console.log(books)
         setLoading(false);
+        setselectedProduct(false);
       })
       .catch((err) => {
         console.error(err);
         setLoading(false);
+        setselectedProduct(false);
       });
-  }, []);
+
+  }, [selectedProduct, location.pathname]);
   //여기부터
   const [currentPage, setCurrentPage] = useState(0);
   const maxPage = Math.ceil(books.length / ITEMS_PER_PAGE) - 1;
@@ -58,13 +66,13 @@ function ProductList_withbutton() {
               <div className="thumbnail-wrap">
                 <img
                   className="thumbnail"
-                  src={book.image_url}
+                  src={book.image}
                   alt={book.title}
                 />
               </div>
               <p className="product-name">{book.title}</p>
               <p className="product-price">
-                {book.price} <span className="discount">20%</span>
+                {book.price}
               </p>
             </a>
           </li>
