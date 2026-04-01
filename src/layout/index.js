@@ -4,15 +4,15 @@ import Button from "../components/Button";
 import ProductList from "../components/ProductList";
 import Footer from "../components/Footer";
 
-function DefaultLayout({ children,isLoggedIn,setIsLoggedIn }) {
+function DefaultLayout({ children }) {
   return (
     <div className="container">
       <div className="Include-Header">
-        <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>
+        <Header />
       </div>
       <div className="container-children">{children}</div>
       <div>
-        <Footer isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>
+        <Footer />
       </div>
     </div>
   );

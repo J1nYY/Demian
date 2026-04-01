@@ -1,18 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { FaCaretLeft } from "react-icons/fa";
 import { FaCaretRight } from "react-icons/fa";
-import { useLocation } from "react-router-dom";
 const ITEMS_PER_PAGE = 4;
-function ProductList_withbutton({selectedProduct,setselectedProduct}) {
+function ProductList_withbutton() {
   const [books, setBooks] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const location = useLocation();
+  const [loading, setLoading] = useState(true);
   //일단 있는 api로 만들게요
   useEffect(() => {
-    setLoading(true)
-    fetch("http://localhost:8001/recommend",{
-      credentials: "include"
-    })
+    fetch("http://127.0.0.1:8000/books")
       .then((res) => {
         if (!res.ok) {
           throw new Error("HTTP error " + res.status);
@@ -20,18 +15,15 @@ function ProductList_withbutton({selectedProduct,setselectedProduct}) {
         return res.json();
       })
       .then((data) => {
-        setBooks(data.recommendations);
-        console.log(books)
+        console.log("Fetched books:", data.books);
+        setBooks(data.books);
         setLoading(false);
-        setselectedProduct(false);
       })
       .catch((err) => {
         console.error(err);
         setLoading(false);
-        setselectedProduct(false);
       });
-
-  }, [selectedProduct, location.pathname]);
+  }, []);
   //여기부터
   const [currentPage, setCurrentPage] = useState(0);
   const maxPage = Math.ceil(books.length / ITEMS_PER_PAGE) - 1;
@@ -66,13 +58,13 @@ function ProductList_withbutton({selectedProduct,setselectedProduct}) {
               <div className="thumbnail-wrap">
                 <img
                   className="thumbnail"
-                  src={book.image}
+                  src={book.image_url}
                   alt={book.title}
                 />
               </div>
               <p className="product-name">{book.title}</p>
               <p className="product-price">
-                {book.price}
+                {book.price} <span className="discount">20%</span>
               </p>
             </a>
           </li>

@@ -22,29 +22,28 @@ function Register() {
         return;
       }
 
-      const response = await fetch("http://localhost:8001/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: form.email,
-          password: form.password,
-          confirm_password: form.confirmPassword,
-        }),
-      });
+      // Get existing users from localStorage
+      const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
 
-      if (response.ok) {
-        alert("Register Success!");
-        navigate("/account");
-      } else {
-        const data = await response.json();
-        console.log("[서버 응답]", data);
-        alert(data.detail || "Registration failed");
+      // Check if email already exists
+      if (existingUsers.some((user) => user.email === form.email)) {
+        alert("Email already registered!");
+        return;
       }
+
+      // Add new user
+      const newUser = {
+        email: form.email,
+        password: form.password,
+      };
+
+      existingUsers.push(newUser);
+      localStorage.setItem("users", JSON.stringify(existingUsers));
+
+      alert("Register Success!");
+      navigate("/account"); // Redirect to login page
     } catch (err) {
       alert("Registration Error");
-      console.error(err);
     }
   };
 

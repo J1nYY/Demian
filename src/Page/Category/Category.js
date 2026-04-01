@@ -24,33 +24,31 @@ function Category() {
   useEffect(() => {
     const categoryData = categories.find((item) => item.name === type);
     setCategory(categoryData);
-    setCurrentIndex(0)
   }, [type]);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const baseUrl = `http://127.0.0.1:8001/category`;
-        const params = new URLSearchParams();
-        if (type) params.append("type", type);
-        if (filter) params.append("category", filter);
-
-        const url = `${baseUrl}?${params.toString()}`;
+        let url = `http://127.0.0.1:8000/books`;
+        if (filter) {
+          url += `?category=${encodeURIComponent(filter)}`;
+        }
         const response = await fetch(url);
-        if (!response.ok) throw new Error("Network error");
-
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
         const data = await response.json();
-        setProducts(data.products);
+        setProducts(data.books);
       } catch (error) {
         console.error("Error fetching products:", error);
       } finally {
         setLoading(false);
       }
     };
-    setCurrentIndex(0)
+
     fetchProducts();
-  }, [type, filter]);
+  }, [filter]);
 
   const handleFilter = (filterValue) => {
     navigate(`?filter=${encodeURIComponent(filterValue)}`);
@@ -100,19 +98,18 @@ function Category() {
                   target="_blank"
                 >
                   <img
-                    src={product.image || images.noImage}
+                    src={product.image_url || images.noImage}
                     className="category-product-image"
                     alt={product.title}
                   />
                   <p className="category-product-name">{product.title}</p>
                   <p className="category-product-price">
-                    {product.price}
+                    {product.price} <span className="discount">20%</span>
                   </p>
                 </a>
               </div>
             ))}
-            <button className="category-right-button" onClick={handleNext}
-                    disabled={currentIndex === products.length-ITEMS_PER_PAGE}>
+            <button className="category-right-button" onClick={handleNext}>
               <FaCaretRight className="category-right-icon" />
             </button>
           </div>

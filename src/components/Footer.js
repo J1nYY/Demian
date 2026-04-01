@@ -1,18 +1,12 @@
 import { useState, useEffect } from "react";
 
-function Footer({isLoggedIn,setIsLoggedIn}) {
-
+function Footer() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:8001/auth/protected", {
-      credentials: "include",
-    })
-        .then(res => res.ok ? res.json() : null)
-        .then(data => {
-          if (data) {
-            setIsLoggedIn(true);
-          }
-        });
+    // Check if user is logged in by checking localStorage
+    const currentUser = localStorage.getItem("currentUser");
+    setIsLoggedIn(!!currentUser);
   }, []);
 
   return (
